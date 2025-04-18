@@ -1,42 +1,46 @@
-import React, { useEffect, useRef } from 'react';
-import * as d3 from 'd3';
+import React from 'react';
 
-const ScatterPlot = ({ data }) => {
-  const svgRef = useRef();
-  const width = 700, height = 300;
-
-  useEffect(() => {
-    const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove();
-
-    const xScale = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.stat) + 5])
-      .range([50, width - 50]);
-
-    const rScale = d3.scaleSqrt()
-      .domain([0, d3.max(data, d => d.salary)])
-      .range([5, 20]);
-
-    svg.append("g")
-      .attr("transform", `translate(0, ${height / 2})`)
-      .call(d3.axisBottom(xScale));
-
-    svg.selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", d => xScale(d.stat))
-      .attr("cy", height / 2)
-      .attr("r", d => rScale(d.salary))
-      .attr("fill", "#3b82f6")
-      .attr("opacity", 0.7)
-      .append("title")
-      .text(d => `${d.name}\nStat: ${d.stat}\nSalary: $${d.salary.toLocaleString()}`);
-  }, [data]);
+function ScatterPlot({ players, selectedMetricLabel }) {
+  // Define max values for scales (assuming values out of 10 for simplicity)
+  const maxOffense = 10;
+  const maxDefense = 10;
 
   return (
-    <svg ref={svgRef} width={width} height={height} className="border rounded shadow" />
+    <div className="bg-white rounded shadow p-4">
+      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+        Offensive vs Defensive Impact
+      </h3>
+      {/* Chart container */}
+      <div className="relative bg-gray-50 border border-gray-300 rounded-sm" style={{ width: '100%', height: '256px' }}>
+        {players.map(p => {
+          // Calculate positions as percentage
+          const leftPercent = (p.offense / maxOffense) * 100;
+          const bottomPercent = (p.defense / maxDefense) * 100;
+          return (
+            <div 
+              key={p.name}
+              className="absolute bg-blue-500 opacity-75 rounded-full"
+              style={{
+                width: '12px',
+                height: '12px',
+                left: `${leftPercent}%`,
+                bottom: `${bottomPercent}%`,
+                transform: 'translate(-50%, -50%)'  // center the dot
+              }}
+              title={`${p.name}: Off ${p.offense}, Def ${p.defense}`}
+            />
+          );
+        })}
+        {/* Axes labels */}
+        <span className="absolute bottom-1 right-2 text-xs text-gray-600">
+          Offense →
+        </span>
+        <span className="absolute top-2 left-1 text-xs text-gray-600 rotate-90 origin-top-left">
+          Defense →
+        </span>
+      </div>
+    </div>
   );
-};
+}
 
 export default ScatterPlot;

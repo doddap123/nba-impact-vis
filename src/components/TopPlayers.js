@@ -1,15 +1,24 @@
 import React from 'react';
 
-const TopPlayers = ({ data }) => {
-  const top = [...data].sort((a, b) => b.stat - a.stat).slice(0, 5);
+function TopPlayers({ players, selectedMetric, selectedMetricLabel }) {
   return (
-    <div className="bg-white p-4 rounded shadow max-w-xs">
-      <h4 className="font-semibold mb-2">Top Players</h4>
-      <ol className="list-decimal list-inside text-sm">
-        {top.map(p => <li key={p.name}>{p.name}</li>)}
-      </ol>
+    <div className="bg-white rounded shadow p-4">
+      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+        Top {selectedMetricLabel} Players
+      </h3>
+      <ul className="text-gray-700 text-sm">
+        {players.map((p, index) => (
+          <li 
+            key={p.name} 
+            className="flex justify-between border-b border-gray-200 py-1 last:border-b-0"
+          >
+            <span>{index + 1}. {p.name}</span>
+            <span className="font-medium">{p[selectedMetric]}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
+}
 
 export default TopPlayers;

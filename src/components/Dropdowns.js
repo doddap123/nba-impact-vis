@@ -1,33 +1,56 @@
 import React from 'react';
 
-const Dropdowns = ({ teams, positions, stats, filters, setFilters }) => {
-  const handleChange = key => e => {
-    setFilters(prev => ({ ...prev, [key]: e.target.value }));
-  };
+function Dropdowns({ 
+  selectedMetric, onMetricChange, 
+  selectedTeam, onTeamChange, 
+  teamOptions 
+}) {
+  // Define metric options for the metric dropdown
+  const metricOptions = [
+    { value: 'offense', label: 'Offensive Impact' },
+    { value: 'defense', label: 'Defensive Impact' },
+    { value: 'totalImpact', label: 'Total Impact' },
+  ];
+
   return (
-    <div className="flex flex-col gap-3">
-      <label className="text-sm font-medium">
-        Team:
-        <select className="ml-2 p-1 rounded border" onChange={handleChange('team')}>
-          <option>All</option>
-          {teams.map(t => <option key={t}>{t}</option>)}
+    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+      {/* Metric Selection Dropdown */}
+      <div className="flex flex-col">
+        <label className="text-sm font-medium text-gray-700 mb-1">
+          Metric:
+        </label>
+        <select 
+          className="p-2 border border-gray-300 rounded focus:outline-none"
+          value={selectedMetric}
+          onChange={e => onMetricChange(e.target.value)}
+        >
+          {metricOptions.map(opt => (
+            <option value={opt.value} key={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
-      </label>
-      <label className="text-sm font-medium">
-        Position:
-        <select className="ml-2 p-1 rounded border" onChange={handleChange('pos')}>
-          <option>All</option>
-          {positions.map(p => <option key={p}>{p}</option>)}
+      </div>
+
+      {/* Team Selection Dropdown */}
+      <div className="flex flex-col">
+        <label className="text-sm font-medium text-gray-700 mb-1">
+          Team:
+        </label>
+        <select 
+          className="p-2 border border-gray-300 rounded focus:outline-none"
+          value={selectedTeam}
+          onChange={e => onTeamChange(e.target.value)}
+        >
+          {teamOptions.map(team => (
+            <option value={team} key={team}>
+              {team === 'All' ? 'All Teams' : team}
+            </option>
+          ))}
         </select>
-      </label>
-      <label className="text-sm font-medium">
-        Stat:
-        <select className="ml-2 p-1 rounded border" onChange={handleChange('stat')}>
-          {stats.map(s => <option key={s}>{s}</option>)}
-        </select>
-      </label>
+      </div>
     </div>
   );
-};
+}
 
 export default Dropdowns;
