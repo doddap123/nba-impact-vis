@@ -1,80 +1,151 @@
-import React, { useState } from 'react';
+// File: src/components/Dashboard.js
+
+import React, { useState, useEffect } from 'react';
 import { players } from '../data/sampleData';
 import Dropdowns from './Dropdowns';
 import ScatterPlot from './ScatterPlot';
-import MetricPanel from './MetricPanel';
-import TopPlayers from './TopPlayers';
+import RankedTable from './RankedTable';
+import RadarChart from './RadarChart';
 
 function Dashboard() {
-  // State for selected metric and team filter
-  const [selectedMetric, setSelectedMetric] = useState('totalImpact');
-  const [selectedTeam, setSelectedTeam] = useState('All');
+  const [selectedMetric, setSelectedMetric]     = useState('points');
+  const [selectedTeam, setSelectedTeam]         = useState('All');
+  const [selectedPos, setSelectedPos]           = useState('All');
+  const [activeTab, setActiveTab]               = useState('distribution');
+  const [selectedPlayer, setSelectedPlayer]     = useState(players[0]);
+  const [brushMode, setBrushMode]               = useState(false);
+  const [brushedPlayers, setBrushedPlayers]     = useState(null);
 
-  // Determine list of teams for filter dropdown (including "All")
-  const teamOptions = ['All', ...new Set(players.map(p => p.team))];
+  const teamOptions     = ['All', ...new Set(players.map(p => p.team))];
+  const positionOptions = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
 
-  // Filter players based on selected team (if "All", include everyone)
-  const filteredPlayers = selectedTeam === 'All'
-    ? players
-    : players.filter(p => p.team === selectedTeam);
+  // Base filter by team & position
+  const filteredPlayers = players.filter(p =>
+    (selectedTeam === 'All' || p.team === selectedTeam) &&
+    (selectedPos  === 'All' || p.pos  === selectedPos)
+  );
 
-  // Compute top 5 players by the selected metric
-  const topPlayers = [...filteredPlayers]
-    .sort((a, b) => b[selectedMetric] - a[selectedMetric])
-    .slice(0, 5);
+  // If brushed subset exists, use it; otherwise use filteredPlayers
+  const viewPlayers = brushedPlayers ?? filteredPlayers;
 
-  // Compute average of the selected metric for the filtered players (for the MetricPanel)
-  const total = filteredPlayers.reduce((sum, p) => sum + p[selectedMetric], 0);
-  const avg = filteredPlayers.length ? (total / filteredPlayers.length) : 0;
+  // If the selectedPlayer is filtered out, pick the first in viewPlayers
+  useEffect(() => {
+    if (!viewPlayers.find(p => p.name === selectedPlayer.name)) {
+      setSelectedPlayer(viewPlayers[0] || players[0]);
+    }
+  }, [viewPlayers, selectedPlayer]);
 
-  // Human-readable label for the selected metric (for display)
-  const metricLabels = {
-    offense: 'Offensive Impact',
-    defense: 'Defensive Impact',
-    totalImpact: 'Total Impact'
+  // Called when brush completes
+  const handleBrushSelection = subset => {
+    setBrushedPlayers(subset);
+    setBrushMode(false);
   };
-  const selectedMetricLabel = metricLabels[selectedMetric];
+
+  // Reset to full view
+  const handleReset = () => {
+    setBrushedPlayers(null);
+    setBrushMode(false);
+  };
+
+  const selectedMetricLabel = selectedMetric.toUpperCase();
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
-      {/* Page Title */}
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">
+    <div className="max-w-7xl mx-auto py-6 px-4">
+      {/* Title */}
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
         NBA Player Impact Dashboard
-      </h2>
+      </h1>
 
-      {/* Dropdown Filters */}
-      <Dropdowns 
+      {/* Filters */}
+      <Dropdowns
         selectedMetric={selectedMetric}
         onMetricChange={setSelectedMetric}
         selectedTeam={selectedTeam}
         onTeamChange={setSelectedTeam}
+        selectedPos={selectedPos}
+        onPosChange={setSelectedPos}
         teamOptions={teamOptions}
+        positionOptions={positionOptions}
       />
 
-      {/* Main Content Layout: Scatter plot and side panels */}
-      <div className="flex flex-col md:flex-row gap-4 mt-4">
-        {/* Scatter Plot section (responsive: takes 2/3 width on md+) */}
-        <div className="md:w-2/3">
-          <ScatterPlot 
-            players={filteredPlayers} 
-            selectedMetricLabel={selectedMetricLabel} 
+      {/* Brush Mode Toggle & Reset */}
+      <div className="mt-6 flex items-center gap-4">
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={brushMode}
+            onChange={() => {
+              setBrushMode(!brushMode);
+              if (!brushMode) setBrushedPlayers(null);
+            }}
+            className="form-checkbox"
           />
-        </div>
+          <span className="text-sm text-gray-700">Enable Brush Mode</span>
+        </label>
+        <button
+          onClick={handleReset}
+          className="text-sm bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+        >
+          Reset View
+        </button>
+      </div>
 
-        {/* Side panel section (Metric summary and Top players) takes 1/3 width on md+ */}
-        <div className="md:w-1/3 flex flex-col gap-4">
-          <MetricPanel 
-            selectedMetricLabel={selectedMetricLabel}
-            selectedTeam={selectedTeam}
-            playerCount={filteredPlayers.length}
-            average={avg}
-          />
-          <TopPlayers 
-            players={topPlayers} 
-            selectedMetric={selectedMetric}
-            selectedMetricLabel={selectedMetricLabel}
-          />
-        </div>
+      {/* Tabs */}
+      <div className="mt-6 border-b border-gray-200">
+        <nav className="flex -mb-px">
+          <button
+            className={`px-4 py-2 text-sm font-medium ${
+              activeTab === 'distribution'
+                ? 'border-b-2 border-blue-500 text-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={() => setActiveTab('distribution')}
+          >
+            Distribution
+          </button>
+          <button
+            className={`ml-6 px-4 py-2 text-sm font-medium ${
+              activeTab === 'profiles'
+                ? 'border-b-2 border-blue-500 text-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={() => setActiveTab('profiles')}
+          >
+            Player Profiles
+          </button>
+        </nav>
+      </div>
+
+      {/* Tab Panels */}
+      <div className="mt-6">
+        {activeTab === 'distribution' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ScatterPlot
+              players={viewPlayers}
+              selectedMetric={selectedMetric}
+              selectedMetricLabel={selectedMetricLabel}
+              selectedPlayer={selectedPlayer}
+              brushMode={brushMode}
+              onBrushSelection={handleBrushSelection}
+              onSelectPlayer={setSelectedPlayer}
+            />
+            <RankedTable
+              players={viewPlayers}
+              selectedMetric={selectedMetric}
+              selectedPlayer={selectedPlayer}
+              onSelectPlayer={setSelectedPlayer}
+            />
+          </div>
+        )}
+
+        {activeTab === 'profiles' && (
+          <div className="mt-4">
+            <RadarChart
+              player={selectedPlayer}
+              players={viewPlayers}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
