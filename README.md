@@ -1,6 +1,6 @@
 CRAFT: Cost-Adjusted Ranking via Aggregated Forest Training
 ==============================
-
+Feel free to check it out on: https://doddap123.github.io/nba-impact-vis/
 DESCRIPTION
 -----------
 CRAFT is a web-based interactive analytics dashboard designed to showcase a novel NBA player metric: Cost-Adjusted Ranking via Aggregated Forest Training (CRAFT). The CRAFT metric uses a weighted combination of core basketball statistics — including points, assists, shooting percentages, and rebounding — adjusted by an estimated contract value using a trained random forest model.
@@ -34,5 +34,4 @@ EXECUTION
 To run the local development server:
    npm start
 
-Also feel free to check it out on: https://doddap123.github.io/nba-impact-vis/
 
