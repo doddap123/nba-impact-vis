@@ -84,11 +84,14 @@ export default function Dashboard() {
             padding: '6px 12px',
             borderRadius: '6px',
             fontWeight: '600',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
           }}
         >
-          <FaInfoCircle style={{ marginRight: '6px' }} />
-          About CRAFT
+          <FaInfoCircle />
+          <span>About CRAFT</span>
         </button>
       </div>
 
