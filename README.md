@@ -34,3 +34,5 @@ EXECUTION
 To run the local development server:
    npm start
 
+Also feel free to check it out on: https://doddap123.github.io/nba-impact-vis/
+
