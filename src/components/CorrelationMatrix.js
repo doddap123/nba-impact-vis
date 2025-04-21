@@ -69,8 +69,9 @@ function CorrelationMatrix({ players }) {
             <strong>${d.label1}</strong> vs <strong>${d.label2}</strong><br/>
             Corr: <strong>${d.value.toFixed(2)}</strong>
           `)
-          .style('left',  event.pageX + 8 + 'px')
-          .style('top',   event.pageY + 8 + 'px');
+          .style('left', event.offsetX + 15 + 'px')
+          .style('top', event.offsetY - 10 + 'px');
+
       })
       .on('mouseout', () => {
         d3.select(tooltipRef.current).style('opacity', 0);
