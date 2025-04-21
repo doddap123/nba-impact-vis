@@ -1,4 +1,3 @@
-==============================
 CRAFT: Cost-Adjusted Ranking via Aggregated Forest Training
 ==============================
 
