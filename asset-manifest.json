@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/nba-impact-vis/static/css/main.7b75faa2.css",
+    "main.js": "/nba-impact-vis/static/js/main.2d633d11.js",
+    "service-worker.js": "/nba-impact-vis/service-worker.js",
+    "index.html": "/nba-impact-vis/index.html",
+    "main.7b75faa2.css.map": "/nba-impact-vis/static/css/main.7b75faa2.css.map",
+    "main.2d633d11.js.map": "/nba-impact-vis/static/js/main.2d633d11.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7b75faa2.css",
+    "static/js/main.2d633d11.js"
+  ]
+}
