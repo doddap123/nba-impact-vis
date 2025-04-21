@@ -1,5 +1,71 @@
+/* src/App.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  --bg:       #22222B;
+  --panel:    #2F3E46;
+  --accent:   #A3C586;
+  --text:     #F1F1F1;
+  --subText:  #d1d5db;
+  --hover:    #4D5D66;
+  --grid:     #3B4B53;
+  --axis:     #9ca3af;
+  --tooltip:  rgba(47,62,70,0.9);
+}
 
 body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
   margin: 0;
-  font-family: sans-serif;
+}
+h1, h2, h3 {
+  color: var(--text);
+}
+
+/* Utility classes */
+.panel-bg {
+  background-color: var(--panel);
+  color: var(--text);
+}
+
+.select-control {
+  background-color: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--grid);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.label-subtext {
+  color: var(--subText);
+}
+
+.button-primary {
+  background-color: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--grid);
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+.button-primary:hover {
+  background-color: var(--hover);
+}
+
+.scroll-table {
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 50;
+  pointer-events: none;
+  font-family: 'Inter', sans-serif;
+  background: var(--tooltip);
+  color: var(--text);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
 }
